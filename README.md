@@ -23,7 +23,7 @@ This repository is supplemental information based on TheCyberMentor's walkthroug
 1. Ensure you have permission to run executable files as Administrator on Windows.
 2. Download or Copy the code of [Mona.py](https://github.com/corelan/mona/blob/master/mona.py); you will need this for module functionality in Immunity Debugger.
 3. Place the Mona.py file in the following directory: C:/Program Files(x86)/Immunity Inc/Immunity Debugger/PyCommands
-4. One last consideration: Ensure you have connectivity between your Lab Environment (do a ping from your Linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtualization software.
+4. Ensure you have connectivity between your Lab Environment (do a ping from your Linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtualization software.
 5. If you're exploiting windows, please read the "Linux Considerations" section before attempting to start on any of these steps.
 6. Turn off Windows Defender or other Antivirus solutions. If you don't, you may have issues with Vulnserver. If you're testing against a different vulnerable machine, I still recommend doing the same to avoid any problems with Defender killing your shell.
 
@@ -38,7 +38,7 @@ This repository is supplemental information based on TheCyberMentor's walkthroug
 8. Exploiting the System
 
 # 1. Identification
-The typical Buffer Overflow scenario relies on Reverse Engineering an executable file. Before you attempt to Spike, you're going to want to find an executable file. In the instance of Vulnserver, you will download an executable file. In a realistic scenario, you're going to want to perform enumeration methodology and look for an executable file to download. These are hosted via SMB Shares, FTP Servers, Exposed Web Directories, etc. Use best practice regarding enumeration and continue with this guide when you have an executable file.
+The typical Buffer Overflow scenario relies on Reverse Engineering an executable file. Before you attempt to Spike, you're going to want to find an executable file. In the instance of Vulnserver, you will download the file. In a realistic scenario, you're going to want to perform enumeration methodology and look for an executable file to download. These are hosted via SMB Shares, FTP Servers, Exposed Web Directories, etc. Use best practice regarding enumeration and continue with this guide when you have an executable file.
 
 # 2. Spiking
 Spiking is all about identifying what command is vulnerable (observed by the program breaking in Immunity)
@@ -101,7 +101,7 @@ The focus of this section is identifying bad characters so you can ensure they d
 6. Go to Immunity, right-click on the ESP value, and click on "Follow in Dump."
 7. Right-click on the Hex Dump tab and click "Appearance -> Font -> OEM" this will make the values a little bigger for comparison.
 8. In the Hex Dump, 01 represents the first bad character tested while FF represents the last. The bad characters go in order, compare the Hex Dump with the characters you copied into Notepad.
-9. For example, the first line of the Hex Dump could read 01 02 03 04 05, if you see a skip within this order, the character it skips is a **bad character**. For example, imagine the first line of the Hex Dump read 01 02 03 05 06, you would now know that 04 is a bad character because it skipped it. You would annotate x04 as a bad character for later. You have to evaluate all the lines until you hit your first FF. It's a true "eye test," as TheCyberMentor says.
+9. For example, the first line of the Hex Dump could read 01 02 03 04 05, if you see a skip within this order, the character it skips is a **bad character**. For example, imagine the first line of the Hex Dump read 01 02 03 B0 05, you would now know that 04 is a bad character because it was skipped. You would now annotate x04 as a bad character for later. You have to evaluate all the lines until you hit your first FF. It's a true "eye test," as TheCyberMentor says.
 10. Double-check for bad characters, and then triple check, and then quadruple check. If you do not have the correct list of bad characters to avoid using in your Shellcode, it will fail.
 
 # 7. Finding the Correct Module
