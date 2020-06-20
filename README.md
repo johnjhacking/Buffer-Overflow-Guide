@@ -24,7 +24,7 @@ This repository is supplemental information based on TheCyberMentor's walkthroug
 2. Download or Copy the code of [Mona.py](https://github.com/corelan/mona/blob/master/mona.py); you will need this for module functionality in Immunity Debugger.
 3. Place the Mona.py file in the following directory: C:/Program Files(x86)/Immunity Inc/Immunity Debugger/PyCommands
 4. Ensure you have connectivity between your Lab Environment (do a ping from your Linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtualization software.
-5. If you're exploiting windows, please read the "Linux Considerations" section before attempting to start on any of these steps.
+5. If you're exploiting Linux, please read the "Linux Considerations" section before attempting to start on any of these steps.
 6. Turn off Windows Defender or other Antivirus solutions. If you don't, you may have issues with Vulnserver. If you're testing against a different vulnerable machine, I still recommend doing the same to avoid any problems with Defender killing your shell.
 
 # Table of Contents
