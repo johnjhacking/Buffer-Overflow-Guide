@@ -59,9 +59,11 @@ Steps:
 The process of Fuzzing is to attempt to identify the number of bytes it took to crash the program.
 
 1. Edit the provided fuzz.py script. Replace the IP, PORT, and TRUN command with the IP, port, and command you want to test.
+2. Restart Immunity + the Exe and attach as you did previously.
+3. Run the script
 **Command: python fuzz.py**
-2. Try to use CTRL+C to stop the script exactly when you see an Access Violation pop-up in Immunity. Doing so will ensure you can more accurately estimate the bytes it took to crash it.
-3. Write down the number of bytes it took to crash the program
+4. Try to use CTRL+C to stop the script exactly when you see an Access Violation pop-up in Immunity. Doing so will ensure you can more accurately estimate the bytes it took to crash it.
+5. Write down the number of bytes it took to crash the program.
 
 # 4. Finding the Offset
 The correct identification of the offset will help ensure that the Shellcode you generate will not immediately crash the program.
@@ -170,19 +172,14 @@ So you're a cool cat, huh? Going after Linux? That's fine! Let me share some min
 YOU ARE A MASTER
 
 # FAQ
-1. What if the port that I connect to doesn't have any commands I can run?
--Ensure that this is the correct port to exploit, if it is, and you're sure of it, try running the following command on the exe from your Kali Machine:
-Command: strings foo.exe 
-When you run this, you should be able to identify possible commands to test.
+1. What if the port that I connect to doesn't have any commands?
+First attempt to enumerate commands. On Linux, run the command: strings foo.exe
+This should give you a list of commands the Exe uses, if not, it's possible that the text
+that you enter is the "vulnerability" and you'll have to modify your scripts accordingly modify
+your scripts accordingly. Stay tuned for a vulnerable string version of the scripts.
 
 2. What if everything has worked, but I cannot catch a shell?
--Are you generating the correct payload? Linux vs. Windows
--Have you attempted to change the padding from 32 to 16 or 8?
--Did you identify all of the bad characters?
--Is your pointer reversed correctly in the gotem.py script?
--Are you using the correct exact offset match in the gotem.py script?
--If you're testing against Windows, is Defender/AV turned off?
--If you're launching the final exploit against Linux, did you change the Windows IP in the script to the Linux Machine?
+Review and evaluate: Are you using the correct payload type (Linux vs. Windows?) Are the IP, Port and Commands correct? Did you reverse the pointer correctly in the final script? Did you change the padding from 32 to 16 or 8? Do you have a listener setup? On the correct port? Did you try a listener on a different port? There are a ton of questions you can ask but these are baseline troubleshooting questions.
 
 These are the only two questions i've thought of. Please contact me with any additional questions.
 Thank you for reading!
