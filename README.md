@@ -1,4 +1,4 @@
-![image](https://github.com/planetxort/Buffer-Overflow-Guide/blob/master/buffer-overflow-attacks.png)
+![image](https://github.com/planetxort/Buffer-Overflow-Guide/blob/master/buff.png)
 Created By: John Jackson (Twitter:@johnjhacking)
 # Buffer Overflow Guide
 Bufferflow Guide, inspired by TheCyberMentor's Buffer Overflow tutorial: [Buffer Overflows Made Easy](https://www.youtube.com/watch?v=qSnPayW6F7U&list=PLLKT__MCUeix3O0DPbmuaRuR_4Hxo4m3G) 
