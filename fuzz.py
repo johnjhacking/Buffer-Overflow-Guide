@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import sys, socket
 from time import sleep
 
@@ -15,4 +16,4 @@ while True:
                 buffer = buffer + "A"*100
 
         except:
-                print "Fuzzing crashed at %s bytes" % str(len(buffer))
+                print("Fuzzing crashed at %s bytes" % str(len(buffer)))
