@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import sys, socket
 
 overflow = (
@@ -36,5 +37,5 @@ try:
        s.close()
 
 except:
-       print "Error connecting to server"
+       print("Error connecting to server")
        sys.exit()
