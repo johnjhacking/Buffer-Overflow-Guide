@@ -1,6 +1,6 @@
 ![image](https://github.com/planetxort/Buffer-Overflow-Guide/blob/master/buff.png)
 Created By: John Jackson (Twitter:@johnjhacking)
-
+----------------------------------------------------------------------------------
 **Special thanks to the Contributors:**
 
 mateuszz0000 - Revisions to the Python Scripts
