@@ -38,6 +38,7 @@ All credit for the scripts goes to TheCyberMentor. The only changes I made to th
 4. Ensure you have connectivity between your Lab Environment (do a ping from your Linux host to your windows host) ping x.x.x.x - If you don't, please read guides on understanding Network Adapter Settings for your specific virtualization software.
 5. If you're exploiting Linux, please read the "Linux Considerations" section before attempting to start on any of these steps.
 6. Turn off Windows Defender or other Antivirus solutions. If you don't, you may have issues with Vulnserver. If you're testing against a different vulnerable machine, I still recommend doing the same to avoid any problems with Defender killing your shell.
+7. I highly recommend doing this immediately after cloning the repo: chmod +x Buffer-Overflow-Guide/ -R (This command will make all of the files in the directory executable, this will prevent you having to remember to chmod +x on the files)
 
 # Table of Contents
 1. Identification
