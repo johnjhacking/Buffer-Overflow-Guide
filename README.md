@@ -8,6 +8,12 @@ This repository is supplemental information based on TheCyberMentor's walkthroug
 
 All credit for the scripts goes to TheCyberMentor. The only changes I made to the scripts were morale-building naming conventions and providing an additional methodology for Linux Buffer Overflows. The beauty of this repository is that you can clone it to your Linux machine (removing the need for manually typing out python scripts) and utilize it as a reference if you forget any of the steps in TheCyberMentor's Walkthrough (or cloned before watching his video series)
 
+# Before Starting:
+1. Please use the scripts in the **Command-Req** folder if the service you're attempting to exploit allows you to input commands such as STAT, TRUN, etc.
+2. Please use the scripts in the **Input Reflection** folder if it is determined that there are no commands you can Spike. This will be determined in Step 1 of the guide.
+3. Naming mechanism of the scripts will remain consistent to prevent confusion in the guide. You will perform near-identical steps. Check out the README in Reflection Input for specific instructions for Commandless services.
+
+
 # Assumed Knowledge
 1. Lab Setup
 2. An understanding of Network adapters and communication between Windows/Linux
@@ -48,7 +54,7 @@ Spiking is all about identifying what command is vulnerable (observed by the pro
 Steps:
 1. Connect to a port or a program that allows you to send specific commands, for instance; you may see that the system you're trying to exploit has a service on port 9999.
 **Command: nc -nv 9999**
-2. Observe the commands that you can use on the service, in TheCyberMentor video, the vulnerable service command was "TRUN," but in reality, you will likely have to use the provided script on multiple commands until the program breaks.
+2. Observe the commands that you can use on the service, in TheCyberMentor video, the vulnerable service command was "TRUN," but in reality, you will likely have to use the provided script on multiple commands until the program breaks. If you do **NOT** see any commands to test, proceed to the FAQ at the end of this README.md file.
 3. Run Immunity as Admin.
 4. Run the executable you found. (or downloaded for practice)
 5. Attach to the executable process.
@@ -87,12 +93,13 @@ The correct identification of the offset will help ensure that the Shellcode you
 
 # 5. Overwriting the EIP
 This step will help you ensure that you can control the EIP. If you are successful, you will observe 4 "B" characters within the EIP space (Based off of the script code)
-1. Edit the provided python script to test your offset (shelling-out.py)
-2. Replace "2003" with your offset value found in step 9 of the Offset section, replace the IP, port, and command with your values as you did in previous sections.
-3. Run the script
+1. Restart Immunity + the Exe and attach as you did previously. 
+2. Edit the provided python script to test your offset (shelling-out.py)
+3. Replace "2003" with your offset value found in step 9 of the Offset section, replace the IP, port, and command with your values as you did in previous sections.
+4. Run the script
 **Command: python shelling-out.py**
-4. You should now observe 4 "B characters" represented by 42424242 written to the EIP.
-5. You now control the EIP.
+5. You should now observe 4 "B characters" represented by 42424242 written to the EIP.
+6. You now control the EIP.
 
 # 6. Finding Bad Characters
 The focus of this section is identifying bad characters so you can ensure they do **not** get included in your Shellcode.
@@ -128,7 +135,7 @@ It's time to find what pointer you need to use to direct the program to your She
 0x625011f7
 0x62501203
 0x62501205
-10. Write down any of the column results that are all "false." You will have to test these. In the instance of vulnserver, the result that will work is 625011af, but if you didn't know that, you might have to perform the next steps on multiple of these false column results.
+10. Write down any of the column results that are mostly all "false." You will have to test these. In the instance of vulnserver, the result that will work is 625011af, but if you didn't know that, you might have to perform the next steps on multiple of these false column results.
 11. Edit the included jumpboyz.py script, edit the shellcode string with the reversed version of one of the results you got from step 10, for example: "\xaf\x11\x50\x62" represents 625011af. Ensure you edit the IP, port, and command of the script.
 12. Go back to Immunity's CPU window, click the black arrow, and type in the pointer tested to follow the expression (for instance: 625011af)
 13. Click the pointer in the window in the top left-hand corner, click F2, you should see the value highlighted with a color. The objective is to set a break-point for testing.
@@ -175,7 +182,8 @@ YOU ARE A MASTER
 1. What if the port that I connect to doesn't have any commands?
 First attempt to enumerate commands. On Linux, run the command: strings foo.exe
 This should give you a list of commands the Exe uses, if not, it's possible that the text
-that you enter is the "vulnerability" and you'll have to modify your scripts accordingly. Stay tuned for a vulnerable string version of the scripts.
+that you enter is the "vulnerability" and you'll have to modify your scripts accordingly. 
+Proceed to the Reflection Input folder in this repository, read the "Readme" & use those scripts instead.
 
 2. What if everything has worked, but I cannot catch a shell?
 Review and evaluate: Are you using the correct payload type (Linux vs. Windows?) Are the IP, Port and Commands correct? Did you reverse the pointer correctly in the final script? Did you change the padding from 32 to 16 or 8? Do you have a listener setup? On the correct port? Did you try a listener on a different port? There are a ton of questions you can ask but these are baseline troubleshooting questions.
